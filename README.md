@@ -24,6 +24,8 @@ Isotope is a chemistry library for calculating masses of elements and molecules.
 
 ## Design
 
+[![Join the chat at https://gitter.im/Michaelt293/isotope](https://badges.gitter.im/Michaelt293/isotope.svg)](https://gitter.im/Michaelt293/isotope?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The Isotope library designed with type safety and flexibility in mind. Key features will be described below.
 
 ### Isotopic, integer, monoisotopic, nominal and average masses
