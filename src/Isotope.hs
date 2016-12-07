@@ -13,20 +13,22 @@ molecules. The main focus of Isotope is the calculation of element/molecular
 masses. For more information regarding Isotope, please refer to the README.
 -}
 module Isotope (
-  -- * Type synonyms for masses
+  -- * Types for masses
     IntegerMass
-  , MonoisotopicMass
-  , NominalMass
-  , AverageMass
-  , IsotopicMass
-  -- * Other type synonyms
+  , MonoisotopicMass(..)
+  , NominalMass(..)
+  , AverageMass(..)
+  , IsotopicMass(..)
+  -- * Other types
   , ElementName
-  , IsotopicAbundance
+  , IsotopicAbundance(..)
   , AtomicNumber
   , ProtonNumber
   , NeutronNumber
   , Nucleons
   , MassNumber
+  -- * Multiplying an `IsotopicMass` by an `IsotopicAbundance`
+  , (*.)
   -- * 'Isotope' and 'Element' data types
   , Isotope(..)
   , Element(..)

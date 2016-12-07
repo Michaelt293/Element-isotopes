@@ -19,15 +19,15 @@ Isotopes library.
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_HADDOCK hide #-}
 module Isotope.Base (
-    -- Type synonyms for masses
+    -- Types for masses
       IntegerMass
-    , MonoisotopicMass
-    , NominalMass
-    , AverageMass
-    , IsotopicMass
-    -- Other type synonyms
+    , MonoisotopicMass(..)
+    , NominalMass(..)
+    , AverageMass(..)
+    , IsotopicMass(..)
+    -- Other types
     , ElementName
-    , IsotopicAbundance
+    , IsotopicAbundance(..)
     , AtomicNumber
     , ProtonNumber
     , NeutronNumber
@@ -48,6 +48,8 @@ module Isotope.Base (
     , elementNominalMass
     , elementAverageMass
     , massNumber
+    -- Multiplying an `IsotopicMass` by an `IsotopicAbundance`
+    , (*.)
     -- 'elements' - a map containing isotopic data for each element.
     , elements
     -- Functions taking an 'elementSymbol' as input
@@ -99,36 +101,57 @@ import Data.List           (elemIndex, sortBy)
 import Data.Maybe          (fromJust)
 
 --------------------------------------------------------------------------------
--- Type synonyms for masses
+-- Types for masses
 
 -- | Integer mass for an isotope.
-type IntegerMass       = MassNumber
+type IntegerMass = MassNumber
 
 -- | The exact mass of the most abundant isotope for an element or the sum of
 -- the exact masses of the most abundant isotope of each element for a
 -- molecular formula.
-type MonoisotopicMass  = Double
+newtype MonoisotopicMass = MonoisotopicMass { getMonoisotopicMass :: Double }
+                         deriving (Show, Eq, Ord, Num, Fractional)
+
+instance Monoid MonoisotopicMass where
+  mempty = MonoisotopicMass 0
+  mappend = (+)
 
 -- | The integer mass of the most abundant isotope for an element or the sum of
 -- integer mass of the most abundant isotope of each element for a chemical
 -- formula.
-type NominalMass       = Int
+newtype NominalMass = NominalMass { getNominalMass :: Int }
+                    deriving (Show, Eq, Ord, Num)
+
+instance Monoid NominalMass where
+  mempty = NominalMass 0
+  mappend = (+)
 
 -- | The average mass of an element or molecular formula based on
 -- naturally-occurring abundances.
-type AverageMass       = Double
+newtype AverageMass = AverageMass { getAverageMass :: Double }
+                    deriving (Show, Eq, Ord, Num, Fractional)
+
+instance Monoid AverageMass where
+  mempty = AverageMass 0
+  mappend = (+)
 
 -- | The exact mass of an isotope.
-type IsotopicMass      = Double
+newtype IsotopicMass = IsotopicMass { getIsotopicMass :: Double }
+                     deriving (Show, Eq, Ord, Num, Fractional)
+
+instance Monoid IsotopicMass where
+  mempty = IsotopicMass 0
+  mappend = (+)
 
 --------------------------------------------------------------------------------
--- Other type synonyms
+-- Other types
 
 -- | The name of an element.
 type ElementName       = String
 
 -- | The natural abundance of an isotope.
-type IsotopicAbundance = Double
+newtype IsotopicAbundance = IsotopicAbundance { getIsotopicAbundance :: Double }
+                          deriving (Show, Eq, Ord, Num, Fractional)
 
 -- | Atomic number of an element.
 type AtomicNumber      = Int
@@ -145,6 +168,12 @@ type Nucleons          = (ProtonNumber, NeutronNumber)
 -- | The number of protons plus the number of neutrons (i.e., proton number +
 -- neutron number) for an isotope.
 type MassNumber        = Int
+
+--------------------------------------------------------------------------------
+-- | Multiplying an `IsotopicMass` by an `IsotopicAbundance` returns an
+-- `AverageMass`.
+(*.) :: IsotopicMass -> IsotopicAbundance -> AverageMass
+IsotopicMass m *. IsotopicAbundance a = AverageMass (m * a)
 
 --------------------------------------------------------------------------------
 -- 'Isotope' and 'Element' data types
@@ -201,17 +230,19 @@ elementIsotopicAbundances :: Element -> [IsotopicAbundance]
 elementIsotopicAbundances e = isotopicAbundance <$> isotopes' e
 
 -- | Monoistopic mass for an element.
-elementMonoisotopicMass :: Element -> IsotopicMass
-elementMonoisotopicMass = isotopicMass . elementMostAbundantIsotope
+elementMonoisotopicMass :: Element -> MonoisotopicMass
+elementMonoisotopicMass =
+  MonoisotopicMass . getIsotopicMass . isotopicMass . elementMostAbundantIsotope
 
 -- | Nominal mass for an element.
-elementNominalMass :: Element -> MassNumber
-elementNominalMass = massNumber . nucleons . elementMostAbundantIsotope
+elementNominalMass :: Element -> NominalMass
+elementNominalMass =
+  NominalMass . massNumber . nucleons . elementMostAbundantIsotope
 
 -- | Average mass of an element.
-elementAverageMass :: Element -> IsotopicMass
-elementAverageMass e = sum [isotopicMass x * isotopicAbundance x |
-                            x <- isotopes' e]
+elementAverageMass :: Element -> AverageMass
+elementAverageMass e =
+  foldMap (\x -> isotopicMass x *. isotopicAbundance x) (isotopes' e)
 
 -- Mass number for an isotope. Mass number is the number of protons plus the
 -- number of neutrons.
