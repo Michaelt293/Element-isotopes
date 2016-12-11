@@ -87,9 +87,9 @@ GHCi> [emp|CH3(CH2)2CH3|]
 EmpiricalFormula {getEmpiricalFormula = fromList [(H,5),(C,2)]}
 ```
 
-### Operators for working with molecular formulae
+### Operators for working with formulae and masses
 
-The Isotope library comes with three operators for working with molecular formulae; `|+|`, `|-|` and `|*|`. These operators have the same fixity and associativity as `+`, `-` and `*`, respectively. This allows us to the `|+|`, `|-|` and `|*|` operators in an intuitive manner (i.e., like basic arithmetic). For example, we could define the molecule formula of propane in terms of its building blocks; that is, 2 methyl groups and 1 methylene group.
+The Isotope library comes with three operators for working with formulae and masses; `|+|`, `|-|` and `|*|`. These operators are provided in the `Operators` type class and have the same fixity and associativity as `+`, `-` and `*`, respectively. This allows us to the `|+|`, `|-|` and `|*|` operators in an intuitive manner (i.e., like basic arithmetic). For example, we could define the molecule formula of propane in terms of its building blocks; that is, 2 methyl groups and 1 methylene group.
 ```haskell
 GHCi> let methyl = [mol|CH3|]
 GHCi> let methylene = [mol|CH2|]
@@ -129,7 +129,7 @@ Similar to `MolecularFormula`, a monoid instance is also provided for `Condensed
 ```haskell
 [emp|CH2|] `plus` [emp|H2O|] /= [emp|C2H5O|] -- pseudo Haskell code - `plus` is not provided in Isotope
 ```
-An empirical formula can be broadly thought of as an elemental composition. Therefore, Isotope does not provide functionality for combining values of type `ElementalComposition`.
+Monoid instances are also provide for `ElementalComposition`, `MonoisotopicMass`, `NominalMass`, `AverageMass` and `IsotopicMass`.
 
 #### Laws for `ElementalComposition`, `MolecularFormula`, `EmpiricalFormula` and `CondensedFormula` data types
 
