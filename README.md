@@ -108,12 +108,12 @@ MolecularFormula {getMolecularFormula = fromList [(H,6),(C,3)]}
 
 In addition to the `toElementalComposition` method, the `ToElementalComposition` type class has three other methods; `monoisotopicMass`, `nominalMass` and `averageMass`. (`toElementalComposition` is the minimal complete definition.) `ElementSymbol`, `ElementalComposition`, `MolecularFormula`, `CondensedFormula` and `EmpiricalFormula` all have instances of `ToElementalComposition`. This provides a uniform approach to working with elements, elemental compositions, molecular formulae, condensed formulae and empirical formulae.
 ```haskell
-GHCi> nominalMass C
-12
-GHCi> averageMass [mol|CH4|]
-16.042498912958358
-GHCi> monoisotopicMass [mol|N(CH3)3|]
-59.073499294499996
+ghci> nominalMass C
+NominalMass {getNominalMass = 12}
+ghci> averageMass [mol|CH4|]
+AverageMass {getAverageMass = 16.042498912958358}
+ghci> monoisotopicMass [mol|N(CH3)3|]
+MonoisotopicMass {getMonoisotopicMass = 59.073499294499996}
 ```
 
 ### Behaviour of `ElementalComposition`, `MolecularFormula`, `CondensedFormula` and `EmpiricalFormula` data types
@@ -152,8 +152,8 @@ where x :: CondensedFormula
 
 Isotope also provides a range of addition functions which accepts an `ElementSymbol` as input. For example, to get the masses of all isotopes for titanium, we simply have to pass the element symbol `Ti` to the function `isotopicMasses`.
 ```haskell
-GHCi> isotopicMasses Ti
-[45.95262772,46.95175879,47.94794198,48.94786568,49.94478689]
+ghci> isotopicMasses Ti
+[IsotopicMass {getIsotopicMass = 45.95262772},IsotopicMass {getIsotopicMass = 46.95175879},IsotopicMass {getIsotopicMass = 47.94794198},IsotopicMass {getIsotopicMass = 48.94786568},IsotopicMass {getIsotopicMass = 49.94478689}]
 ```
 
 ## Comparison to other chemistry libraries
