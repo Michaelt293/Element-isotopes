@@ -669,6 +669,10 @@ getFormulaSum f m = fold $
 mkElementalComposition :: [(ElementSymbol, Int)] -> ElementalComposition
 mkElementalComposition = ElementalComposition . filterZero . fromList
 
+instance Monoid ElementalComposition where
+  mempty = emptyFormula
+  mappend = (|+|)
+
 instance Operators ElementalComposition where
   ElementalComposition x |+| ElementalComposition y =
     ElementalComposition $ combineMaps (+) x y
