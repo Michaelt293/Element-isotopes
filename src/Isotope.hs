@@ -27,8 +27,8 @@ module Isotope (
   , NeutronNumber
   , Nucleons
   , MassNumber
-  -- * Multiplying an `IsotopicMass` by an `IsotopicAbundance`
-  , (*.)
+  -- * Infix operators used in `Isotope`
+  , Operators(..)
   -- * 'Isotope' and 'Element' data types
   , Isotope(..)
   , Element(..)
@@ -66,9 +66,6 @@ module Isotope (
   -- * Molecular formulae
   , MolecularFormula(..)
   , ToMolecularFormula(..)
-  , (|+|)
-  , (|-|)
-  , (|*|)
   , mkMolecularFormula
   -- * Condensed formulae
   , CondensedFormula(..)

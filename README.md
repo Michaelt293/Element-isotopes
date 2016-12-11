@@ -93,7 +93,7 @@ The Isotope library comes with three operators for working with molecular formul
 ```haskell
 GHCi> let methyl = [mol|CH3|]
 GHCi> let methylene = [mol|CH2|]
-GHCi> let propane = 2 |*| methyl |+| methylene
+GHCi> let propane = methyl |*| 2 |+| methylene
 GHCi> propane
 MolecularFormula {getMolecularFormula = fromList [(H,8),(C,3)]}
 ```
