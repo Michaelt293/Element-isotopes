@@ -19,8 +19,10 @@ Isotopes library.
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_HADDOCK hide #-}
 module Isotope.Base (
+    -- Infix operators used in `Isotope`
+      Operators(..)
     -- Types for masses
-      IntegerMass
+    , IntegerMass
     , MonoisotopicMass(..)
     , NominalMass(..)
     , AverageMass(..)
@@ -48,8 +50,6 @@ module Isotope.Base (
     , elementNominalMass
     , elementAverageMass
     , massNumber
-  -- * Infix operators used in `Isotope`
-    , Operators(..)
     -- 'elements' - a map containing isotopic data for each element.
     , elements
     -- Functions taking an 'elementSymbol' as input
@@ -98,6 +98,18 @@ import Data.List           (elemIndex, sortBy)
 import Data.Maybe          (fromJust)
 
 --------------------------------------------------------------------------------
+
+-- | Infix operators used in `Isotope`. These operators support addition,
+-- subtraction and multiplication.
+class Operators a where
+  (|+|) :: a -> a -> a
+  (|-|) :: a -> a -> a
+  (|*|) :: a -> Int -> a
+  infixl 6 |+|
+  infixl 7 |*|
+  infixl 6 |-|
+
+--------------------------------------------------------------------------------
 -- Types for masses
 
 -- | Integer mass for an isotope.
@@ -113,6 +125,11 @@ instance Monoid MonoisotopicMass where
   mempty = MonoisotopicMass 0
   mappend = (|+|)
 
+instance Operators MonoisotopicMass where
+  MonoisotopicMass x |+| MonoisotopicMass y = MonoisotopicMass $ x + y
+  MonoisotopicMass x |-| MonoisotopicMass y = MonoisotopicMass $ x - y
+  MonoisotopicMass x |*| y = MonoisotopicMass $ x * fromIntegral y
+
 -- | The integer mass of the most abundant isotope for an element or the sum of
 -- integer mass of the most abundant isotope of each element for a chemical
 -- formula.
@@ -123,6 +140,11 @@ instance Monoid NominalMass where
   mempty = NominalMass 0
   mappend = (|+|)
 
+instance Operators NominalMass where
+  NominalMass x |+| NominalMass y = NominalMass $ x + y
+  NominalMass x |-| NominalMass y = NominalMass $ x - y
+  NominalMass x |*| y = NominalMass $ x * y
+
 -- | The average mass of an element or molecular formula based on
 -- naturally-occurring abundances.
 newtype AverageMass = AverageMass { getAverageMass :: Double }
@@ -132,6 +154,11 @@ instance Monoid AverageMass where
   mempty = AverageMass 0
   mappend = (|+|)
 
+instance Operators AverageMass where
+  AverageMass x |+| AverageMass y = AverageMass $ x + y
+  AverageMass x |-| AverageMass y = AverageMass $ x - y
+  AverageMass x |*| y = AverageMass $ x * fromIntegral y
+
 -- | The exact mass of an isotope.
 newtype IsotopicMass = IsotopicMass { getIsotopicMass :: Double }
                      deriving (Show, Eq, Ord)
@@ -139,6 +166,11 @@ newtype IsotopicMass = IsotopicMass { getIsotopicMass :: Double }
 instance Monoid IsotopicMass where
   mempty = IsotopicMass 0
   mappend = (|+|)
+
+instance Operators IsotopicMass where
+  IsotopicMass x |+| IsotopicMass y = IsotopicMass $ x + y
+  IsotopicMass x |-| IsotopicMass y = IsotopicMass $ x - y
+  IsotopicMass x |*| y = IsotopicMass $ x * fromIntegral y
 
 --------------------------------------------------------------------------------
 -- Other types
@@ -167,37 +199,7 @@ type Nucleons          = (ProtonNumber, NeutronNumber)
 type MassNumber        = Int
 
 --------------------------------------------------------------------------------
--- | Infix operators
-class Operators a where
-  (|+|) :: a -> a -> a
-  (|-|) :: a -> a -> a
-  (|*|) :: a -> Int -> a
-  infixl 6 |+|
-  infixl 7 |*|
-  infixl 6 |-|
 
-instance Operators MonoisotopicMass where
-  MonoisotopicMass x |+| MonoisotopicMass y = MonoisotopicMass $ x + y
-  MonoisotopicMass x |-| MonoisotopicMass y = MonoisotopicMass $ x - y
-  MonoisotopicMass x |*| y = MonoisotopicMass $ x * fromIntegral y
-
-instance Operators NominalMass where
-  NominalMass x |+| NominalMass y = NominalMass $ x + y
-  NominalMass x |-| NominalMass y = NominalMass $ x - y
-  NominalMass x |*| y = NominalMass $ x * y
-
-instance Operators AverageMass where
-  AverageMass x |+| AverageMass y = AverageMass $ x + y
-  AverageMass x |-| AverageMass y = AverageMass $ x - y
-  AverageMass x |*| y = AverageMass $ x * fromIntegral y
-
-instance Operators IsotopicMass where
-  IsotopicMass x |+| IsotopicMass y = IsotopicMass $ x + y
-  IsotopicMass x |-| IsotopicMass y = IsotopicMass $ x - y
-  IsotopicMass x |*| y = IsotopicMass $ x * fromIntegral y
-
-
---------------------------------------------------------------------------------
 -- 'Isotope' and 'Element' data types
 
 -- | An 'Isotope' has three parameters; 'Nucleons', 'IsotopeMass' and

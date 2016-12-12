@@ -13,8 +13,10 @@ molecules. The main focus of Isotope is the calculation of element/molecular
 masses. For more information regarding Isotope, please refer to the README.
 -}
 module Isotope (
+  -- * Infix operators used in `Isotope`
+    Operators(..)
   -- * Types for masses
-    IntegerMass
+  , IntegerMass
   , MonoisotopicMass(..)
   , NominalMass(..)
   , AverageMass(..)
