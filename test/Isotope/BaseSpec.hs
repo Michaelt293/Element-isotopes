@@ -252,7 +252,7 @@ arbRightCondensedFormulaGen 0 = do
   condForm <- leftCondensedFormulaGen
   return $ Right (CondensedFormula [condForm], m)
 arbRightCondensedFormulaGen n | n > 0 = do
-  (Positive v) <- arbitrary
+  v <- choose (1, 3)
   let n' = n `div` (v + 1)
   m <- choose (1, 4)
   condForm' <- replicateM v (arbRightCondensedFormulaGen n')
@@ -269,7 +269,7 @@ instance Arbitrary MolecularFormula where
 
 instance Arbitrary CondensedFormula where
   arbitrary = do
-    n <- choose (0, 5)
+    n <- choose (0, 4)
     condForm <- vectorOf n
       (oneof [leftCondensedFormulaGen, sized arbRightCondensedFormulaGen])
     return $ CondensedFormula condForm
