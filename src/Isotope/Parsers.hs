@@ -69,19 +69,19 @@ molecularFormula = mkMolecularFormula <$> many subFormula
 
 -- Helper function. Parses parenthesed sections in condensed formulae, i.e.,
 -- the \"(CH3)3\" section of \"N(CH3)3\".
-rightCondensedFormula :: Parser (Either MolecularFormula ([MolecularFormula], Int))
+rightCondensedFormula :: Parser (Either MolecularFormula (CondensedFormula, Int))
 rightCondensedFormula = do
    _ <- char '('
-   formula <- some subMolecularFormula
+   formula <- condensedFormula
    _ <- char ')'
    num <- optional L.integer
-   return $ Right $ case num of
+   return . Right $ case num of
                          Nothing   -> (formula, 1)
                          Just num' -> (formula, fromIntegral num')
 
 -- Helper function. Parses non-parenthesed sections in condensed formulae, i.e.,
 -- the \"N\" section of \"N(CH3)3\".
-leftCondensedFormula :: Parser (Either MolecularFormula ([MolecularFormula], Int))
+leftCondensedFormula :: Parser (Either MolecularFormula (CondensedFormula, Int))
 leftCondensedFormula = Left <$> subMolecularFormula
 
 -- | Parses a condensed formula, i.e., \"N(CH3)3\".
