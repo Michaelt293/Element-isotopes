@@ -243,21 +243,6 @@ elemSymIntPairGen = do
 elemSymIntPairListGen :: Gen [(ElementSymbol, Int)]
 elemSymIntPairListGen = listOf elemSymIntPairGen
 
-leftCondensedFormulaGen :: Gen (Either MolecularFormula (CondensedFormula, Int))
-leftCondensedFormulaGen = Left <$> arbitrary
-
---rightCondensedFormulaGen :: Gen (Either MolecularFormula (CondensedFormula, Int))
-arbRightCondensedFormulaGen 0 = do
-  m <- choose (1, 4)
-  condForm <- leftCondensedFormulaGen
-  return $ Right (CondensedFormula [condForm], m)
-arbRightCondensedFormulaGen n | n > 0 = do
-  v <- choose (1, 3)
-  let n' = n `div` (v + 1)
-  m <- choose (1, 4)
-  condForm' <- replicateM v (arbRightCondensedFormulaGen n')
-  return $ Right (CondensedFormula condForm', m)
-
 instance Arbitrary ElementSymbol where
     arbitrary = oneof $ return <$> elementSymbolList
 
@@ -273,6 +258,20 @@ instance Arbitrary CondensedFormula where
     condForm <- vectorOf n
       (oneof [leftCondensedFormulaGen, sized arbRightCondensedFormulaGen])
     return $ CondensedFormula condForm
+    where
+      leftCondensedFormulaGen :: Gen (Either MolecularFormula (CondensedFormula, Int))
+      leftCondensedFormulaGen = Left <$> arbitrary
+      arbRightCondensedFormulaGen :: Int -> Gen (Either MolecularFormula (CondensedFormula, Int))
+      arbRightCondensedFormulaGen 0 = do
+        m <- choose (1, 4)
+        condForm <- leftCondensedFormulaGen
+        return $ Right (CondensedFormula [condForm], m)
+      arbRightCondensedFormulaGen n | n > 0 = do
+        m <- choose (1, 4)
+        v <- choose (1, 3)
+        let n' = n `div` (v + 1)
+        condForm' <- replicateM v (arbRightCondensedFormulaGen n')
+        return $ Right (CondensedFormula condForm', m)
 
 instance Arbitrary EmpiricalFormula where
   arbitrary = mkEmpiricalFormula <$> elemSymIntPairListGen
