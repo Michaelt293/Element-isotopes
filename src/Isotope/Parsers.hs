@@ -50,10 +50,8 @@ elementSymbol = read <$> choice (try . string <$> elementSymbolStrList)
 subFormula :: Parser (ElementSymbol, Int)
 subFormula = do
     sym <- elementSymbol
-    num <- optional L.integer
-    return $ case num of
-                  Nothing   -> (sym, 1)
-                  Just num' -> (sym, fromIntegral num')
+    num <- option 1 L.integer
+    return (sym, fromIntegral num)
 
 -- | Parses an elemental composition (i.e. \"C6H6\").
 elementalComposition :: Parser ElementalComposition
@@ -78,10 +76,8 @@ condensedFormula =  CondensedFormula <$> many (leftCondensedFormula <|> rightCon
        _ <- char '('
        formula <- condensedFormula
        _ <- char ')'
-       num <- optional L.integer
-       return . Right $ case num of
-                             Nothing   -> (formula, 1)
-                             Just num' -> (formula, fromIntegral num')
+       num <- option 1 L.integer
+       return $ Right (formula, fromIntegral num)
 
 -- | Parses a empirical formula (i.e. \"CH\").
 empiricalFormula :: Parser EmpiricalFormula
