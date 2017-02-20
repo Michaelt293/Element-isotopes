@@ -48,18 +48,12 @@ elementSymbol = read <$> choice (try . string <$> elementSymbolStrList)
 
 -- | Parses an sub-formula (i.e., \"C2\").
 subFormula :: Parser (ElementSymbol, Int)
-subFormula = do
-    sym <- elementSymbol
-    num <- option 1 L.integer
-    return (sym, fromIntegral num)
+subFormula =
+  (\sym num -> (sym, fromIntegral num)) <$> elementSymbol <*> option 1 L.integer
 
 -- | Parses an elemental composition (i.e. \"C6H6\").
 elementalComposition :: Parser ElementalComposition
 elementalComposition = mkElementalComposition <$> many subFormula
-
--- | Parses an sub-molecular-formula (i.e., \"C2\").
-subMolecularFormula :: Parser MolecularFormula
-subMolecularFormula = mkMolecularFormula . pure <$> subFormula
 
 -- | Parses a molecular formula (i.e. \"C6H6\").
 molecularFormula :: Parser MolecularFormula
@@ -69,6 +63,8 @@ molecularFormula = mkMolecularFormula <$> many subFormula
 condensedFormula :: Parser CondensedFormula
 condensedFormula =  CondensedFormula <$> many (leftCondensedFormula <|> rightCondensedFormula)
   where
+    subMolecularFormula :: Parser MolecularFormula
+    subMolecularFormula = mkMolecularFormula . pure <$> subFormula
     leftCondensedFormula :: Parser (Either MolecularFormula (CondensedFormula, Int))
     leftCondensedFormula = Left <$> subMolecularFormula
     rightCondensedFormula :: Parser (Either MolecularFormula (CondensedFormula, Int))
