@@ -93,6 +93,8 @@ spec = do
         renderFormula [mol|CCl4|] `shouldBe` "CCl4"
       it "[mol|H2O4S|] should be \"H2O4S\"" $
         renderFormula [mol|H2O4S|] `shouldBe` "H2O4S"
+      it "[mol|BBr3|] should be \"BBr3\"" $
+        renderFormula [mol|BBr3|] `shouldBe` "BBr3"
 
     describe "renderFormula for CondensedFormula" $ do
       it "[con|C6H6O|] should be \"C6H6O\"" $

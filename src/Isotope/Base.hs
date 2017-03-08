@@ -713,9 +713,9 @@ sortElementSymbolMap m = sortBy (hillSystem fst) elementSymbolIntList
         (C, _)   -> LT
         (_, C)   -> GT
         (H, b')  -> if containsC then LT
-                    else (show . elementName) H `compare` show b'
+                    else show H `compare` show b'
         (a', H)  -> if containsC then GT
-                    else show a' `compare` (show . elementName) H
+                    else show a' `compare` show H
         (a', b') -> show a' `compare` show b'
 
 --------------------------------------------------------------------------------
