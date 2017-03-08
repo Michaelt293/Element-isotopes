@@ -108,7 +108,7 @@ MolecularFormula {getMolecularFormula = fromList [(H,6),(C,3)]}
 
 ### `ToElementalComposition` type class
 
-In addition to the `toElementalComposition` method, the `ToElementalComposition` type class has three other methods; `monoisotopicMass`, `nominalMass` and `averageMass`. (`toElementalComposition` is the minimal complete definition.) `ElementSymbol`, `ElementalComposition`, `MolecularFormula`, `CondensedFormula` and `EmpiricalFormula` all have instances of `ToElementalComposition`. This provides a uniform approach to working with elements, elemental compositions, molecular formulae, condensed formulae and empirical formulae.
+`ToElementalComposition` is a superclass of `ToMolecularFormula`, `ToCondensedFormuala` and `ToEmpiricalFormula`. In addition to the `toElementalComposition` method, the `ToElementalComposition` type class has three other methods; `monoisotopicMass`, `nominalMass` and `averageMass`. (`toElementalComposition` is the minimal complete definition.) `ElementSymbol`, `ElementalComposition`, `MolecularFormula`, `CondensedFormula` and `EmpiricalFormula` all have instances of `ToElementalComposition`. This provides a uniform approach to working with elements, elemental compositions, molecular formulae, condensed formulae and empirical formulae.
 ```haskell
 ghci> nominalMass C
 NominalMass {getNominalMass = 12}

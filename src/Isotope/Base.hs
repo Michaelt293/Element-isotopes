@@ -726,7 +726,7 @@ newtype MolecularFormula = MolecularFormula {
     getMolecularFormula :: Map ElementSymbol Int }
         deriving (Show, Read, Eq, Ord)
 
-class ToMolecularFormula a where
+class ToElementalComposition a => ToMolecularFormula a where
     toMolecularFormula :: a -> MolecularFormula
 
 -- The function unionWith adapted to work with 'Map ElementSymbol Int'.
@@ -770,7 +770,7 @@ newtype CondensedFormula = CondensedFormula {
     getCondensedFormula :: [Either MolecularFormula (CondensedFormula, Int)] }
         deriving (Show, Read, Eq, Ord)
 
-class ToCondensedFormuala a where
+class ToElementalComposition a => ToCondensedFormuala a where
   toCondensedFormula :: a -> CondensedFormula
 
 instance Monoid CondensedFormula where
@@ -806,7 +806,7 @@ newtype EmpiricalFormula = EmpiricalFormula {
 
 -- | Type class with a single method, 'toEmpiricalFormula', which converts a
 -- chemical data type to `EmpiricalFormula`.
-class ToEmpiricalFormula a where
+class ToElementalComposition a => ToEmpiricalFormula a where
   toEmpiricalFormula :: a -> EmpiricalFormula
 
 -- | Smart constructor to make values of type 'EmpiricalFormula'.
