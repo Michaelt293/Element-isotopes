@@ -29,6 +29,7 @@ module Isotope.Parsers (
 
 import Isotope.Base
 import Language.Haskell.TH.Quote
+import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Lift
 import Text.Megaparsec
 import Text.Megaparsec.String
@@ -61,7 +62,8 @@ molecularFormula = mkMolecularFormula <$> many subFormula
 
 -- | Parses a condensed formula, i.e., \"N(CH3)3\".
 condensedFormula :: Parser CondensedFormula
-condensedFormula =  CondensedFormula <$> many (leftCondensedFormula <|> rightCondensedFormula)
+condensedFormula =
+  CondensedFormula <$> many (leftCondensedFormula <|> rightCondensedFormula)
   where
     subMolecularFormula :: Parser MolecularFormula
     subMolecularFormula = mkMolecularFormula . pure <$> subFormula
@@ -80,18 +82,21 @@ empiricalFormula :: Parser EmpiricalFormula
 empiricalFormula = mkEmpiricalFormula <$> many subFormula
 
 -- Helper function for `ElementalComposition` quasiquoter
+quoteElementalComposition :: String -> Q Exp
 quoteElementalComposition s =
   case parse (condensedFormula <* eof) "" s of
     Left err -> error $ "Could not parse formula: " <> show err
     Right v  -> lift $ toElementalComposition v
 
 -- Helper function for `MolecularFormula` quasiquoter
+quoteMolecularFormula :: String -> Q Exp
 quoteMolecularFormula s =
   case parse (condensedFormula <* eof) "" s of
     Left err -> fail $ "Could not parse formula: " <> show err
     Right v  -> lift $ toMolecularFormula v
 
 -- Helper function for `CondensedFormula` quasiquoter
+quoteCondensedFormula :: String -> Q Exp
 quoteCondensedFormula s =
   case parse (condensedFormula <* eof) "" s of
     Left err -> error $ "Could not parse formula: " <> show err
@@ -105,23 +110,43 @@ quoteEmpiricalFormula s =
 
 -- | Quasiquoter for `ElementalComposition`
 ele :: QuasiQuoter
-ele = QuasiQuoter
-    { quoteExp = quoteElementalComposition }
+ele = QuasiQuoter {
+    quoteExp = quoteElementalComposition
+  , quotePat  = notHandled "patterns" "elemental composition"
+  , quoteType = notHandled "types" "elemental composition"
+  , quoteDec  = notHandled "declarations" "elemental composition"
+  }
 
 -- | Quasiquoter for `MolecularFormula`
 mol :: QuasiQuoter
-mol = QuasiQuoter
-    { quoteExp = quoteMolecularFormula }
+mol = QuasiQuoter {
+  quoteExp = quoteMolecularFormula
+  , quotePat  = notHandled "patterns" "molecular formula"
+  , quoteType = notHandled "types" "molecular formula"
+  , quoteDec  = notHandled "declarations" "molecular formula"
+  }
 
 -- | Quasiquoter for `CondensedFormula`
 con :: QuasiQuoter
-con = QuasiQuoter
-    { quoteExp = quoteCondensedFormula }
+con = QuasiQuoter {
+quoteExp = quoteCondensedFormula
+  , quotePat  = notHandled "patterns" "condensed formula"
+  , quoteType = notHandled "types" "condensed formula"
+  , quoteDec  = notHandled "declarations" "condensed formula"
+  }
 
 -- | Quasiquoter for `EmpiricalFormula`
 emp :: QuasiQuoter
-emp = QuasiQuoter
-    { quoteExp = quoteEmpiricalFormula }
+emp = QuasiQuoter{ quoteExp = quoteEmpiricalFormula
+  , quotePat  = notHandled "patterns" "empirical formula"
+  , quoteType = notHandled "types" "empirical formula"
+  , quoteDec  = notHandled "declarations" "empirical formula"
+  }
+
+-- Helper function used in QuasiQuoters
+notHandled :: String -> String -> a
+notHandled feature quoterName =
+  error $ feature <> " are not handled by the" <> quoterName <> "quasiquoter."
 
 $(deriveLift ''ElementSymbol)
 
