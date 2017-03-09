@@ -31,6 +31,7 @@ import Isotope.Base
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Lift
+import Control.Monad.Except (throwError)
 import Text.Megaparsec
 import Text.Megaparsec.String
 import qualified Text.Megaparsec.Lexer as L
@@ -85,27 +86,31 @@ empiricalFormula = mkEmpiricalFormula <$> many subFormula
 quoteElementalComposition :: String -> Q Exp
 quoteElementalComposition s =
   case parse (condensedFormula <* eof) "" s of
-    Left err -> error $ "Could not parse formula: " <> show err
+    Left err -> fail $
+      "Could not parse elemental formula!\n" <> parseErrorPretty err
     Right v  -> lift $ toElementalComposition v
 
 -- Helper function for `MolecularFormula` quasiquoter
 quoteMolecularFormula :: String -> Q Exp
 quoteMolecularFormula s =
   case parse (condensedFormula <* eof) "" s of
-    Left err -> fail $ "Could not parse formula: " <> show err
+    Left err -> fail $
+      "Could not parse molecular formula!\n" <> parseErrorPretty err
     Right v  -> lift $ toMolecularFormula v
 
 -- Helper function for `CondensedFormula` quasiquoter
 quoteCondensedFormula :: String -> Q Exp
 quoteCondensedFormula s =
   case parse (condensedFormula <* eof) "" s of
-    Left err -> error $ "Could not parse formula: " <> show err
+    Left err -> fail $
+      "Could not parse condensed formula!\n" <> parseErrorPretty err
     Right v  -> lift v
 
 -- Helper function for `EmpiricalFormula` quasiquoter
 quoteEmpiricalFormula s =
   case parse (condensedFormula <* eof) "" s of
-    Left err -> fail $ "Could not parse formula: " <> show err
+    Left err -> fail $
+      "Could not parse empirical formula!\n" <> parseErrorPretty err
     Right v  -> lift $ toEmpiricalFormula v
 
 -- | Quasiquoter for `ElementalComposition`
