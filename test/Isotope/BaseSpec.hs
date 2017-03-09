@@ -18,9 +18,9 @@ spec = do
         (\x -> length x /= 2 || (isLower . last) x) . show <$>
         elementSymbolList `shouldSatisfy` and
 
-    describe "lookupElement" .
+    describe "elementSymbolList" .
       it "should not contain duplicate elements" $
-        lookupElement <$> elementSymbolList `shouldSatisfy` allUnique
+        findElement <$> elementSymbolList `shouldSatisfy` allUnique
 
     describe "elementName" $ do
       it "should not be an empty string" $

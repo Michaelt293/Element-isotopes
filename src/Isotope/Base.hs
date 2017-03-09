@@ -53,7 +53,6 @@ module Isotope.Base (
     -- 'elements' - a map containing isotopic data for each element.
     , elements
     -- Functions taking an 'elementSymbol' as input
-    , lookupElement
     , findElement
     , elementName
     , atomicNumber
@@ -584,11 +583,6 @@ elements = tupleToElement <$> fromList
 
 --------------------------------------------------------------------------------
 -- Functions taking an 'elementSymbol' as input
-
--- | Searches elements (a map) with an 'ElementSymbol' key and returns
--- information for the element (wrapped in 'Maybe').
-lookupElement :: ElementSymbol -> Maybe Element
-lookupElement = flip lookup elements
 
 -- | Searches 'elements' (a map) with an 'ElementSymbol' key and returns
 -- information for the element.
