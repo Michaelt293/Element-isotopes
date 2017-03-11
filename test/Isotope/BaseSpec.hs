@@ -47,7 +47,7 @@ spec = do
 
     describe "selectIsotope" .
       it "calling fuction with the arguments C and 12 should select C12" $
-        nucleons (selectIsotope C 12) `shouldBe` (6, 6)
+        nucleons <$> selectIsotope C 12 `shouldBe` Just (6, 6)
 
     describe "monoisotopicMass" .
       it "calling function with C should be 12.0" $

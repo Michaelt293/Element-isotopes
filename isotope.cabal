@@ -20,7 +20,6 @@ library
                      , Isotope.Parsers
   build-depends:       base >= 4.7 && < 5
                      , containers >= 0.5 && < 0.6
-                     , mtl
                      , megaparsec >= 5 && < 6
                      , template-haskell
                      , th-lift
@@ -35,7 +34,7 @@ test-suite Element-isotopes-test
                      , isotope
                      , hspec
                      , QuickCheck
-                     , megaparsec >= 5 && < 6
+                     , megaparsec
   other-modules:       Isotope.BaseSpec
                      , Isotope.ParsersSpec
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N

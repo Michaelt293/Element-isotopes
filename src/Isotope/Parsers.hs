@@ -31,12 +31,10 @@ import Isotope.Base
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Lift
-import Control.Monad.Except (throwError)
 import Text.Megaparsec
 import Text.Megaparsec.String
 import qualified Text.Megaparsec.Lexer as L
-import Data.String
-import Data.List hiding (filter)
+import Data.List
 import Data.Map (Map)
 import Data.Monoid ((<>))
 
@@ -125,7 +123,7 @@ ele = QuasiQuoter {
 -- | Quasiquoter for `MolecularFormula`
 mol :: QuasiQuoter
 mol = QuasiQuoter {
-  quoteExp = quoteMolecularFormula
+    quoteExp = quoteMolecularFormula
   , quotePat  = notHandled "patterns" "molecular formula"
   , quoteType = notHandled "types" "molecular formula"
   , quoteDec  = notHandled "declarations" "molecular formula"
@@ -134,7 +132,7 @@ mol = QuasiQuoter {
 -- | Quasiquoter for `CondensedFormula`
 con :: QuasiQuoter
 con = QuasiQuoter {
-quoteExp = quoteCondensedFormula
+    quoteExp = quoteCondensedFormula
   , quotePat  = notHandled "patterns" "condensed formula"
   , quoteType = notHandled "types" "condensed formula"
   , quoteDec  = notHandled "declarations" "condensed formula"
@@ -142,7 +140,8 @@ quoteExp = quoteCondensedFormula
 
 -- | Quasiquoter for `EmpiricalFormula`
 emp :: QuasiQuoter
-emp = QuasiQuoter{ quoteExp = quoteEmpiricalFormula
+emp = QuasiQuoter {
+    quoteExp = quoteEmpiricalFormula
   , quotePat  = notHandled "patterns" "empirical formula"
   , quoteType = notHandled "types" "empirical formula"
   , quoteDec  = notHandled "declarations" "empirical formula"

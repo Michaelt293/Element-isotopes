@@ -68,7 +68,7 @@ module Isotope (
   , mkMolecularFormula
   -- * Condensed formulae
   , CondensedFormula(..)
-  , ToCondensedFormuala(..)
+  , ToCondensedFormula(..)
   -- * Empirical formulae
   , EmpiricalFormula(..)
   , ToEmpiricalFormula(..)
